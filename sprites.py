@@ -1,6 +1,8 @@
 from pygame.image import load
 from pygame.sprite import Sprite
 
+from states import StateMachine
+
 class ImageSet(object):
 
 	def __init__(self, images, maxtime=5000):
@@ -54,11 +56,16 @@ class Megaman(Sprite):
 	def __init__(self):
 		super(Megaman, self).__init__()
 
-		self.state = 'neutral'
+		self.states = StateMachine((
+			('neutral', self.neutral),
+		))
 
 		images = []
 		for i in xrange(14):
 			images.append(load('assets/images/actor/running/%d.png' % (i+1)).convert_alpha())
+
+	def neutral(self):
+		pass
 
 
 imageset = None
