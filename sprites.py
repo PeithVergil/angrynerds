@@ -5,20 +5,20 @@ from states import StateMachine
 
 class ImageSet(object):
 
-	def __init__(self, images, maxtime=5000):
-		self.interval = maxtime/len(images)
+	def __init__(self, frames, maxtime=5000):
+		self.interval = maxtime/len(frames)
 		self.maxtime = maxtime
-		self.images = images
+		self.frames = frames
 		self.index = 0
 		self.time = 0
 
 	def numframes(self):
 		'''Get the total number of frames'''
-		return len(self.images)
+		return len(self.frames)
 
 	def currframe(self):
 		'''Get the current frame'''
-		return self.images[self.index]
+		return self.frames[self.index]
 
 	def next(self):
 		'''Jump to next frame'''
