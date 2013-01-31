@@ -5,7 +5,7 @@ import sys
 import pygame
 from pygame.locals import *
 
-import sprites
+from characters import Megaman
 
 def main():
 	FPS = 60
@@ -26,7 +26,7 @@ def main():
 	count = 0
 	time = 0
 
-	sprites.init()
+	mm = Megaman()
 
 	bgimage = pygame.image.load('/home/pvergil/Pictures/webdesigns/scherf.jpg').convert()
 	image = pygame.image.load('/home/pvergil/Desktop/PeterMissen/Images/PNGs/envelope.png').convert_alpha()
@@ -55,8 +55,8 @@ def main():
 
 		screen.blit(bgimage, (0, 0))
 
-		sprites.imageset.update(time)
-		sprites.imageset.draw(screen)
+		mm.update(time)
+		mm.draw(screen)
 
 		# x, y = pygame.mouse.get_pos()
 		# screen.blit(image, (x, y))
