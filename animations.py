@@ -39,9 +39,25 @@ class Animation(object):
 	def draw(self, screen, loc=(0,0)):
 		screen.blit(self.currframe(), loc)
 
+class MegamanStandingAnimation(Animation):
+
+	def __init__(self):
+		super(MegamanStandingAnimation, self).__init__(
+			load_frames('assets/images/actor/standing', 1), 700
+		)
+		
+
 class MegamanRunningAnimation(Animation):
 
 	def __init__(self):
 		super(MegamanRunningAnimation, self).__init__(
 			load_frames('assets/images/actor/running', 14), 700
 		)
+
+class MegamanJumpingAnimation(Animation):
+
+	def __init__(self):
+		super(MegamanJumpingAnimation, self).__init__(
+			load_frames('assets/images/actor/jumping', 20), 600
+		)
+		
