@@ -28,8 +28,8 @@ def main():
 
 	mm = Megaman()
 
-	bgimage = pygame.image.load('/home/pvergil/Pictures/webdesigns/scherf.jpg').convert()
-	image = pygame.image.load('/home/pvergil/Desktop/PeterMissen/Images/PNGs/envelope.png').convert_alpha()
+	# bgimage = pygame.image.load('/home/pvergil/Pictures/webdesigns/scherf.jpg').convert()
+	# image = pygame.image.load('/home/pvergil/Desktop/PeterMissen/Images/PNGs/envelope.png').convert_alpha()
 
 	mx, my = (0, 0)
 
@@ -52,8 +52,10 @@ def main():
 			print '%d FPS' % frames
 			count = 0
 			frames = 0
+			
+		screen.fill((0,0,0))
 
-		screen.blit(bgimage, (0, 0))
+		# screen.blit(bgimage, (0, 0))
 
 		mm.update(time)
 		mm.draw(screen)
@@ -61,8 +63,8 @@ def main():
 		# x, y = pygame.mouse.get_pos()
 		# screen.blit(image, (x, y))
 
-		if mx and my:
-			screen.blit(image, (mx, my))
+		# if mx and my:
+			# screen.blit(image, (mx, my))
 
 		pygame.display.update()
 

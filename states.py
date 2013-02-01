@@ -31,10 +31,10 @@ class StandingState(State):
 		if keys[pygame.K_UP]:
 			self.character.set_state('jumping')
 		elif keys[pygame.K_LEFT]:
-			self.character.set_dir(characters.DIR_LEFT)
+			self.character.dir = characters.DIR_LEFT
 			self.character.set_state('running')
 		elif keys[pygame.K_RIGHT]:
-			self.character.set_dir(characters.DIR_RIGHT)
+			self.character.dir = characters.DIR_RIGHT
 			self.character.set_state('running')
 
 class RunningState(State):
@@ -48,10 +48,10 @@ class RunningState(State):
 		if keys[pygame.K_UP]:
 			self.character.set_state('jumping')
 		elif keys[pygame.K_LEFT]:
-			self.character.set_dir(characters.DIR_LEFT)
+			self.character.dir = characters.DIR_LEFT
 			self.character.set_state('running')
 		elif keys[pygame.K_RIGHT]:
-			self.character.set_dir(characters.DIR_RIGHT)
+			self.character.dir = characters.DIR_RIGHT
 			self.character.set_state('running')
 		else:
 			self.character.set_state('standing')
@@ -65,9 +65,9 @@ class JumpingState(State):
 		keys = key.get_pressed()
 
 		if keys[pygame.K_LEFT]:
-			self.character.set_dir(characters.DIR_LEFT)
+			self.character.dir = characters.DIR_LEFT
 		elif keys[pygame.K_RIGHT]:
-			self.character.set_dir(characters.DIR_RIGHT)
+			self.character.dir = characters.DIR_RIGHT
 
 	def message(self, msg):
 		if msg == 'anim_done':

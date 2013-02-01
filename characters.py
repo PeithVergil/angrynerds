@@ -21,15 +21,15 @@ class Character(object):
 		self.name = name
 		self.dir = DIR_RIGHT
 
-	def set_dir(self, direction):
-		animation = self.get_animation()
+	# def set_dir(self, direction):
+		# animation = self.get_animation()
 
-		if direction == DIR_LEFT:
-			animation.flipx = True
-		else:
-			animation.flipx = False
+		# if direction == DIR_LEFT:
+			# animation.flipx = True
+		# else:
+			# animation.flipx = False
 
-		self.dir = direction
+		# self.dir = direction
 
 	def get_state(self, name=None):
 		if not name:
@@ -68,6 +68,11 @@ class Character(object):
 	def update(self, time):
 		anim = self.get_animation()
 		if anim:
+			if self.dir == DIR_LEFT:
+				anim.flipx = True
+			else:
+				anim.flipx = False
+				
 			anim.update(time)
 
 		stat = self.get_state()
