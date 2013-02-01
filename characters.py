@@ -21,6 +21,16 @@ class Character(object):
 		self.name = name
 		self.dir = DIR_RIGHT
 
+	def set_dir(self, direction):
+		animation = self.get_animation()
+
+		if direction == DIR_LEFT:
+			animation.flipx = True
+		else:
+			animation.flipx = False
+
+		self.dir = direction
+
 	def get_state(self, name=None):
 		if not name:
 			return self.states[self.state]
@@ -50,11 +60,24 @@ class Character(object):
 		self.anim = name
 		return  self.get_animation(name)
 
+	def message(self, msg):
+		stat = self.get_state()
+		if stat:
+			stat.message(msg)
+
 	def update(self, time):
-		self.states[self.state].update(time)
+		anim = self.get_animation()
+		if anim:
+			anim.update(time)
+
+		stat = self.get_state()
+		if stat:
+			stat.update(time)
 
 	def draw(self, screen):
-		self.states[self.state].draw(screen)
+		anim = self.get_animation()
+		if anim:
+			anim.draw(screen)
 
 class Megaman(Character):
 
@@ -62,9 +85,9 @@ class Megaman(Character):
 		super(Megaman, self).__init__('Megaman')
 
 		self.anims = {
-			'standing': MegamanStandingAnimation(),
-			'jumping': MegamanJumpingAnimation(),
-			'running': MegamanRunningAnimation(),
+			'standing': MegamanStandingAnimation(self),
+			'jumping': MegamanJumpingAnimation(self),
+			'running': MegamanRunningAnimation(self),
 		}
 
 		self.states = {
@@ -73,4 +96,4 @@ class Megaman(Character):
 			'jumping': JumpingState(self),
 		}
 
-		self.set_state('running')
+		self.set_state('standing')
