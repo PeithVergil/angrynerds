@@ -52,14 +52,14 @@ class Animation(object):
 
 			self.time = 0
 
-	def draw(self, screen, loc=(0,0)):
+	def draw(self, screen, pos=(0,0)):
 		frame = transform.flip(
 			self.currframe(),
 			self.flipx,
 			self.flipy
 		)
 
-		screen.blit(frame, loc)
+		screen.blit(frame, pos)
 
 class MegamanStandingAnimation(Animation):
 

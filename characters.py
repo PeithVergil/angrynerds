@@ -15,21 +15,13 @@ class Character(object):
 		self.health = 200
 		self.states = None
 		self.state = 'standing'
-		self.speed = 1.5
+		self.speed = 0.06
 		self.anims = None
 		self.anim = 'standing'
 		self.name = name
+		self.posx = 0
+		self.posy = 0
 		self.dir = DIR_RIGHT
-
-	# def set_dir(self, direction):
-		# animation = self.get_animation()
-
-		# if direction == DIR_LEFT:
-			# animation.flipx = True
-		# else:
-			# animation.flipx = False
-
-		# self.dir = direction
 
 	def get_state(self, name=None):
 		if not name:
@@ -82,7 +74,7 @@ class Character(object):
 	def draw(self, screen):
 		anim = self.get_animation()
 		if anim:
-			anim.draw(screen)
+			anim.draw(screen, (self.posx, self.posy))
 
 class Megaman(Character):
 

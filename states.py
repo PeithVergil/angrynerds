@@ -49,9 +49,15 @@ class RunningState(State):
 			self.character.set_state('jumping')
 		elif keys[pygame.K_LEFT]:
 			self.character.dir = characters.DIR_LEFT
+
+			self.character.posx += self.character.dir * self.character.speed * time
+
 			self.character.set_state('running')
 		elif keys[pygame.K_RIGHT]:
 			self.character.dir = characters.DIR_RIGHT
+
+			self.character.posx += self.character.dir * self.character.speed * time
+
 			self.character.set_state('running')
 		else:
 			self.character.set_state('standing')

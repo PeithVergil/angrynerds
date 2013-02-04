@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-import sys
-
 import pygame
 from pygame.locals import *
 
+from worlds import SimpleWorld
 from characters import Megaman
+
+SCREEN_W = 640
+SCREEN_H = 480
 
 def main():
 	FPS = 60
@@ -17,7 +19,7 @@ def main():
 
 	# The game screen
 	screen = pygame.display.set_mode(
-		(640, 480), 0, 32
+		(SCREEN_W, SCREEN_H), 0, 32
 	)
 	pygame.display.set_caption('Hello, World!')
 
@@ -27,19 +29,15 @@ def main():
 	time = 0
 
 	mm = Megaman()
-
-	# bgimage = pygame.image.load('/home/pvergil/Pictures/webdesigns/scherf.jpg').convert()
-	# image = pygame.image.load('/home/pvergil/Desktop/PeterMissen/Images/PNGs/envelope.png').convert_alpha()
-
-	mx, my = (0, 0)
+	sw = SimpleWorld(mm)
 
 	while running:
 		for event in pygame.event.get():
 			if event.type == QUIT:
-				sys.exit()
+				running = False
 			elif event.type == KEYDOWN:
 				if event.key == K_ESCAPE:
-					sys.exit()
+					running = False
 			elif event.type == MOUSEBUTTONDOWN:
 				if event.button == 1:
 					mx, my = event.pos
@@ -49,22 +47,17 @@ def main():
 		count += time
 		frames += 1
 		if count >= 1000:
-			print '%d FPS' % frames
+			# print '%d FPS' % frames
 			count = 0
 			frames = 0
 			
 		screen.fill((0,0,0))
 
-		# screen.blit(bgimage, (0, 0))
+		sw.update(time)
+		sw.draw(screen)
 
 		mm.update(time)
 		mm.draw(screen)
-
-		# x, y = pygame.mouse.get_pos()
-		# screen.blit(image, (x, y))
-
-		# if mx and my:
-			# screen.blit(image, (mx, my))
 
 		pygame.display.update()
 
