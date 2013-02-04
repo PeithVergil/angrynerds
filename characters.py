@@ -71,10 +71,13 @@ class Character(object):
 		if stat:
 			stat.update(time)
 
-	def draw(self, screen):
+	def draw(self, screen, cam=None):
 		anim = self.get_animation()
 		if anim:
-			anim.draw(screen, (self.posx, self.posy))
+                        if cam:
+                                anim.draw(screen, (self.posx - cam.pos.left, self.posy - cam.pos.top))
+                        else:
+                                anim.draw(screen, (self.posx, self.posy))
 
 class Megaman(Character):
 

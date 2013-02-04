@@ -1,0 +1,3 @@
+SCREENSIZE = (640, 480)
+
+MAXFPS = 60

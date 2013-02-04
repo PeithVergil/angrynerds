@@ -1,41 +1,36 @@
 from utils.math import lerp
 from utils.image import load_rgb
 
-SCREEN_W = 640
-SCREEN_H = 480
-
 class Word(object):
 
-	def __init__(self, character=None, bgimage=None):
-		self.character = character
-		self.bgimage = bgimage
-		self.height = 480
-		self.width = 1200
-
-		self.posx = 0
-		self.posy = 0
-
-		self.maxx = self.width - SCREEN_W
-		self.maxy = self.height - SCREEN_H
+	def __init__(self, camera, bgimage=None):
+                self.camera = camera
+		self.image = bgimage
+		self.rect = bgimage.get_rect()
 
 	def update(self, time):
-		fx = self.character.posx / self.width
-		fy = self.character.posy / self.height
-		
-		self.posx = lerp(0, self.width, fx)
-		self.posy = lerp(0, self.height, fy)
+                self.camera.update(time)
 
-		if self.posx >= self.maxx:
-			self.posx = self.maxx
-		if self.posx <= 0:
-			self.posx = 0
+                if self.camera.pos.right > self.rect.right:
+                        self.camera.pos.right = self.rect.right
+                if self.camera.pos.left < self.rect.left:
+                        self.camera.pos.left = self.rect.left
 
-	def draw(self, screen):
-		screen.blit(self.bgimage, (-self.posx, -self.posy))
+	def draw(self, screen, cam=None):
+                if cam:
+                        screen.blit(self.image, (
+                                self.rect.left - cam.pos.left,
+                                self.rect.top - cam.pos.top
+                        ))
+                else:
+                        screen.blit(self.image, (
+                                -self.rect.left,
+                                -self.rect.top
+                        ))
 
 class SimpleWorld(Word):
 
-	def __init__(self, character):
+	def __init__(self, camera):
 		super(SimpleWorld, self).__init__(
-			character, load_rgb('assets/images/world/simple/simple.png')
+                        camera, load_rgb('assets/images/world/simple/simple.png')
 		)
