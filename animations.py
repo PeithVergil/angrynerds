@@ -23,6 +23,10 @@ class Animation(object):
 		'''Get the current frame'''
 		return self.frames[self.index]
 
+	def framerect(self):
+		'''Get the rect object of the current frame'''
+		return self.frames[self.index].get_rect()
+
 	def next(self):
 		'''Jump to next frame'''
 		self.index += 1

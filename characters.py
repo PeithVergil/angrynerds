@@ -1,3 +1,5 @@
+import pygame
+
 from animations import (
 	MegamanStandingAnimation, MegamanRunningAnimation, MegamanJumpingAnimation
 )
@@ -15,9 +17,10 @@ class Character(object):
 		self.health = 200
 		self.states = None
 		self.state = 'standing'
-		self.speed = 0.06
+		self.speed = 0.1
 		self.anims = None
 		self.anim = 'standing'
+		self.rect = None
 		self.name = name
 		self.posx = 0
 		self.posy = 0
@@ -74,10 +77,16 @@ class Character(object):
 	def draw(self, screen, cam=None):
 		anim = self.get_animation()
 		if anim:
-                        if cam:
-                                anim.draw(screen, (self.posx - cam.pos.left, self.posy - cam.pos.top))
-                        else:
-                                anim.draw(screen, (self.posx, self.posy))
+			if cam:
+				anim.draw(screen, (
+					self.rect.left - cam.rect.left,
+					self.rect.top - cam.rect.top
+				))
+			else:
+				anim.draw(screen, (
+					self.rect.left,
+					self.rect.top
+				))
 
 class Megaman(Character):
 
@@ -97,3 +106,7 @@ class Megaman(Character):
 		}
 
 		self.set_state('standing')
+
+		anim = self.get_animation()
+		if anim:
+			self.rect = anim.framerect()

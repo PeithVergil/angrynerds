@@ -1,3 +1,5 @@
+import math
+
 import pygame
 from pygame import key, transform
 
@@ -50,15 +52,15 @@ class RunningState(State):
 		elif keys[pygame.K_LEFT]:
 			self.character.dir = characters.DIR_LEFT
 
-			self.character.posx += self.character.dir * self.character.speed * time
-
-			self.character.set_state('running')
+			print self.character.rect.left, ' + ', self.character.dir * self.character.speed * time
+			self.character.rect.left += self.character.dir * self.character.speed * time
+			print self.character.rect.left
 		elif keys[pygame.K_RIGHT]:
 			self.character.dir = characters.DIR_RIGHT
 
-			self.character.posx += self.character.dir * self.character.speed * time
-
-			self.character.set_state('running')
+			print self.character.rect.right, ' + ', self.character.dir * self.character.speed * time
+			self.character.rect.right += math.ceil(self.character.dir * self.character.speed * time)
+			print self.character.rect.right
 		else:
 			self.character.set_state('standing')
 
