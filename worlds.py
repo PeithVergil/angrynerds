@@ -15,6 +15,11 @@ class Word(object):
             self.camera.rect.right = self.rect.right
         if self.camera.rect.left < self.rect.left:
             self.camera.rect.left = self.rect.left
+		
+        if self.camera.rect.top < self.rect.top:
+            self.camera.rect.top = self.rect.top
+        if self.camera.rect.bottom > self.rect.bottom:
+            self.camera.rect.bottom = self.rect.bottom
 
     def draw(self, screen, cam=None):
         if cam:
