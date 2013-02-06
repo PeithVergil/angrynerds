@@ -1,5 +1,3 @@
-import pygame
-
 from animations import (
 	MegamanStandingAnimation, MegamanRunningAnimation, MegamanJumpingAnimation
 )
@@ -10,80 +8,81 @@ from states import (
 
 DIR_RIGHT = 1
 DIR_LEFT = -1
+DIR_DOWN = 1
+DIR_UP = -1
 
 class Character(object):
 
-	def __init__(self, name):
-		self.health = 200
-		self.states = None
-		self.state = 'standing'
-		self.speed = 0.1
-		self.anims = None
-		self.anim = 'standing'
-		self.rect = None
+	def __init__(self, name, states, anims):
 		self.name = name
-		self.posx = 0
-		self.posy = 0
+
+		# Character states
+		self.states = states
+		self.state = None
+
+		# Character animations
+		self.anims = anims
+		self.anim = None
+
+		self.health = 200
+		self.speed = 0.1
 		self.dir = DIR_RIGHT
 
-	def get_state(self, name=None):
-		if not name:
-			return self.states[self.state]
+		self.set_state('standing')
+
+		if self.anim:
+			self.rect = self.anim.framerect()
 		else:
-			return self.states[name]
+			self.rect = None
+
+	def get_state(self, name=None):
+		for state in self.states:
+			if state.name == name:
+				return state
+		return None
 
 	def set_state(self, name):
-		cur_state = self.get_state()
-		if ( cur_state ):
-			cur_state.stop()
+		if ( self.state ):
+			self.state.stop()
 
-		new_state = self.get_state(name)
-		if ( new_state ):
-			new_state.start()
-
-		self.state = name
-
-		return new_state
+		self.state = self.get_state(name)
+		if ( self.state ):
+			self.state.start()
 
 	def get_animation(self, name=None):
-		if not name:
-			return self.anims[self.anim]
-		else:
-			return self.anims[name]
+		for anim in self.anims:
+			if anim.name == name:
+				return anim
+		return None
 
 	def set_animation(self, name):
-		self.anim = name
-		return  self.get_animation(name)
+		self.anim = self.get_animation(name)
 
 	def message(self, msg):
-		stat = self.get_state()
-		if stat:
-			stat.message(msg)
+		if self.state:
+			self.state.message(msg)
 
 	def update(self, time):
-		anim = self.get_animation()
-		if anim:
+		if self.anim:
 			if self.dir == DIR_LEFT:
-				anim.flipx = True
+				self.anim.flipx = True
 			else:
-				anim.flipx = False
-				
-			anim.update(time)
+				self.anim.flipx = False
 
-		stat = self.get_state()
-		if stat:
-			stat.update(time)
+			self.anim.update(time)
+
+		if self.state:
+			self.state.update(time)
 
 	def draw(self, screen, cam=None):
-		anim = self.get_animation()
-		if anim:
+		if self.anim:
 			if cam:
-				anim.draw(screen, (
+				self.anim.draw(screen, (
 					self.rect.left - cam.rect.left,
 					self.rect.top - cam.rect.top
 				))
 			else:
-				anim.draw(screen, (
+				self.anim.draw(screen, (
 					self.rect.left,
 					self.rect.top
 				))
@@ -91,22 +90,16 @@ class Character(object):
 class Megaman(Character):
 
 	def __init__(self):
-		super(Megaman, self).__init__('Megaman')
-
-		self.anims = {
-			'standing': MegamanStandingAnimation(self),
-			'jumping': MegamanJumpingAnimation(self),
-			'running': MegamanRunningAnimation(self),
-		}
-
-		self.states = {
-			'standing': StandingState(self),
-			'running': RunningState(self),
-			'jumping': JumpingState(self),
-		}
-
-		self.set_state('standing')
-
-		anim = self.get_animation()
-		if anim:
-			self.rect = anim.framerect()
+		super(Megaman, self).__init__(
+			'Megaman',
+			[
+				StandingState(self),
+				RunningState(self),
+				JumpingState(self),
+			],
+			[
+				MegamanStandingAnimation(self),
+				MegamanJumpingAnimation(self),
+				MegamanRunningAnimation(self),
+			]
+		)

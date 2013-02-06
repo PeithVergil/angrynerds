@@ -4,12 +4,13 @@ from utils.image import load_frames
 
 class Animation(object):
 
-	def __init__(self, frames, maxtime, character=None):
+	def __init__(self, name, frames, maxtime, character=None):
 		self.character = character
 		self.interval = maxtime/len(frames)
 		self.maxtime = maxtime
 		self.frames = frames
 		self.index = 0
+		self.name = name
 		self.time = 0
 
 		self.flipx = False
@@ -69,7 +70,7 @@ class MegamanStandingAnimation(Animation):
 
 	def __init__(self, character):
 		super(MegamanStandingAnimation, self).__init__(
-			load_frames('assets/images/actor/standing', 1), 700, character
+			'standing', load_frames('assets/images/actor/standing', 1), 700, character
 		)
 		
 
@@ -77,13 +78,13 @@ class MegamanRunningAnimation(Animation):
 
 	def __init__(self, character):
 		super(MegamanRunningAnimation, self).__init__(
-			load_frames('assets/images/actor/running', 14), 700, character
+			'running', load_frames('assets/images/actor/running', 14), 700, character
 		)
 
 class MegamanJumpingAnimation(Animation):
 
 	def __init__(self, character):
 		super(MegamanJumpingAnimation, self).__init__(
-			load_frames('assets/images/actor/jumping', 20), 600, character
+			'jumping', load_frames('assets/images/actor/jumping', 20), 600, character
 		)
 		

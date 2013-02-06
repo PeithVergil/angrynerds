@@ -7,7 +7,8 @@ import characters
 
 class State(object):
 
-	def __init__(self, character):
+	def __init__(self, name, character):
+		self.name = name
 		self.character = character
 
 	def message(self, msg):
@@ -23,6 +24,9 @@ class State(object):
 		pass
 
 class StandingState(State):
+
+	def __init__(self, character):
+		super(StandingState, self).__init__('standing', character)
 
 	def start(self):
 		self.character.set_animation('standing')
@@ -41,6 +45,9 @@ class StandingState(State):
 
 class RunningState(State):
 
+	def __init__(self, character):
+		super(RunningState, self).__init__('running', character)
+
 	def start(self):
 		self.character.set_animation('running')
 
@@ -52,19 +59,22 @@ class RunningState(State):
 		elif keys[pygame.K_LEFT]:
 			self.character.dir = characters.DIR_LEFT
 
-			print self.character.rect.left, ' + ', self.character.dir * self.character.speed * time
+			# print self.character.rect.left, ' + ', self.character.dir * self.character.speed * time
 			self.character.rect.left += self.character.dir * self.character.speed * time
-			print self.character.rect.left
+			# print self.character.rect.left
 		elif keys[pygame.K_RIGHT]:
 			self.character.dir = characters.DIR_RIGHT
 
-			print self.character.rect.right, ' + ', self.character.dir * self.character.speed * time
+			# print self.character.rect.right, ' + ', self.character.dir * self.character.speed * time
 			self.character.rect.right += math.ceil(self.character.dir * self.character.speed * time)
-			print self.character.rect.right
+			# print self.character.rect.right
 		else:
 			self.character.set_state('standing')
 
 class JumpingState(State):
+
+	def __init__(self, character):
+		super(JumpingState, self).__init__('jumping', character)
 
 	def start(self):
 		self.character.set_animation('jumping')

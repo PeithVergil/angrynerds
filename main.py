@@ -6,8 +6,6 @@ from pygame.locals import *
 from globals import MAXFPS, SCREENSIZE
 
 from worlds import SimpleWorld
-from cameras import Camera
-from characters import Megaman
 
 def main():
 	pygame.init()
@@ -26,9 +24,7 @@ def main():
 	count = 0
 	time = 0
 
-	mm = Megaman()
-	cm = Camera(mm)
-	sw = SimpleWorld(cm)
+	sw = SimpleWorld()
 
 	while running:
 		for event in pygame.event.get():
@@ -46,17 +42,14 @@ def main():
 		count += time
 		frames += 1
 		if count >= 1000:
-##                        print '%d (%d) FPS' % (clock.get_fps(), frames)
+			print '%d (%d) FPS' % (clock.get_fps(), frames)
 			count = 0
 			frames = 0
 			
 		screen.fill((0,0,0))
 
 		sw.update(time)
-		sw.draw(screen, cm)
-
-		mm.update(time)
-		mm.draw(screen, cm)
+		sw.draw(screen)
 
 		pygame.display.update()
 
