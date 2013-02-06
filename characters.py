@@ -1,9 +1,9 @@
 from animations import (
-	MegamanStandingAnimation, MegamanRunningAnimation, MegamanJumpingAnimation
+	MegamanStandingAnimation, MegamanRunningAnimation, MegamanJumpingAnimation, MegamanShootingAnimation
 )
 
 from states import (
-	StandingState, RunningState, JumpingState
+	StandingState, ShootingState, RunningState, JumpingState
 )
 
 DIR_RIGHT = 1
@@ -94,11 +94,13 @@ class Megaman(Character):
 			'Megaman',
 			[
 				StandingState(self),
+				ShootingState(self),
 				RunningState(self),
 				JumpingState(self),
 			],
 			[
 				MegamanStandingAnimation(self),
+				MegamanShootingAnimation(self),
 				MegamanJumpingAnimation(self),
 				MegamanRunningAnimation(self),
 			]

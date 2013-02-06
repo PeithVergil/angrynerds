@@ -42,6 +42,20 @@ class StandingState(State):
 		elif keys[pygame.K_RIGHT]:
 			self.character.dir = characters.DIR_RIGHT
 			self.character.set_state('running')
+		elif keys[pygame.K_SPACE]:
+			self.character.set_state('shooting')
+
+class ShootingState(State):
+
+	def __init__(self, character):
+		super(ShootingState, self).__init__('shooting', character)
+
+	def start(self):
+		self.character.set_animation('shooting')
+
+	def message(self, msg):
+		if msg == 'anim_done':
+			self.character.set_state('standing')
 
 class RunningState(State):
 
