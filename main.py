@@ -5,7 +5,7 @@ from pygame.locals import *
 
 from globals import MAXFPS, SCREENSIZE
 
-from worlds import SimpleWorld
+from worlds import SampleWorld
 
 def main():
 	pygame.init()
@@ -24,7 +24,7 @@ def main():
 	count = 0
 	time = 0
 
-	sw = SimpleWorld()
+	sw = SampleWorld()
 
 	while running:
 		for event in pygame.event.get():
