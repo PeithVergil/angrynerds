@@ -18,6 +18,7 @@ DIR_UP = -1
 class Character(object):
 
 	def __init__(self, world, states, anims, pos=(0,0)):
+		# The world object
 		self.world = world
 
 		# Character states
@@ -28,25 +29,25 @@ class Character(object):
 		self.anims = anims
 		self.anim = None
 
-		self.initialize()
-
-		# Initial position
-		if self.rect:
-			self.rect.x = pos[0]
-			self.rect.y = pos[1]
-
-	def initialize(self):
+		# Other character settings
 		self.health = 200
 		self.speed = 0.1
 		self.name = 'Unnamed'
 		self.dir = DIR_RIGHT
 
-		self.set_state('standing')
+		self.initialize()
 
 		if self.anim:
 			self.rect = self.anim.framerect()
+
+			# Initial position
+			self.rect.x = pos[0]
+			self.rect.y = pos[1]
 		else:
 			self.rect = None
+
+	def initialize(self):
+		self.set_state('standing')
 
 	def get_state(self, name=None):
 		for state in self.states:
@@ -109,9 +110,9 @@ class SimpleCharacter(Character):
 		self.mass = mass
 
 		# Initialize Physics attributes
-		self.physics()
+		self.setup()
 
-	def physics(self):
+	def setup(self):
 		inertia = pymunk.moment_for_circle(
 			self.mass, 0, self.rect.width
 		)
@@ -156,6 +157,3 @@ class Megaman(SimpleCharacter):
 		super(Megaman, self).__init__(world, states, anims, pos)
 
 		self.name = 'Megaman'
-
-	def initialize(self):
-		super(Megaman, self).initialize()
