@@ -109,7 +109,7 @@ class SimpleCharacter(Character):
 
 		self.mass = mass
 
-		# Initialize Physics attributes
+		# Setup Physics attributes
 		self.setup()
 
 	def setup(self):
