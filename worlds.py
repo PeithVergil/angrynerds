@@ -1,4 +1,5 @@
-from pymunk import Space, Vec2d
+from pymunk import Segment, Space, Vec2d
+from pymunk.pygame_util import draw_space
 
 from cameras import Camera
 from utils.math import lerp
@@ -27,7 +28,7 @@ class Word(object):
         ))
 
         for obj in self.objects:
-            obj.draw(screen, self.camera)
+            obj.draw(screen)
 
 class SimpleWorld(Word):
 
@@ -40,11 +41,7 @@ class SimpleWorld(Word):
         self.space.gravity = Vec2d(0.0, -900.0)
 
         for obj in self.objects:
-            self.add(obj)
-
-    def add(self, obj):
-        '''Add an object to the Physics simulation'''
-        self.space.add(obj.body, obj.shape)
+            self.space.add(obj.body, obj.shape)
 
     def update(self, time):
         # Update Physics simulation
@@ -52,22 +49,22 @@ class SimpleWorld(Word):
         # Update the rest of the world
         super(SimpleWorld, self).update(time)
 
+    def draw(self, screen):
+        super(SimpleWorld, self).draw(screen)
+        # FOR DEBUGGING:
+        # Draw the physics space
+        draw_space(screen, self.space)
+
 class SampleWorld(SimpleWorld):
 
     def __init__(self):
-        megaman1 = Megaman((100,100))
-        megaman2 = Megaman((200,200))
-        megaman3 = Megaman((300,300))
-
-        # megaman1.rect.x = 0
-        # megaman1.rect.y = 100
-
-        # megaman2.rect.x = 100
-        # megaman2.rect.y = 200
-
-        # megaman3.rect.x = 200
-        # megaman3.rect.y = 300
+        megaman1 = Megaman(self, (100,100))
+        megaman2 = Megaman(self, (200,200))
+        megaman3 = Megaman(self, (300,300))
 
         super(SampleWorld, self).__init__(
             [megaman1, megaman2, megaman3], Camera(self, megaman2), load_rgb('assets/images/world/simple/simple.png')
         )
+
+        # Ground static object
+        self.space.add(Segment(self.space.static_body, (0, 50), (640, 50), 5))

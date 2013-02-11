@@ -1,5 +1,6 @@
-# import pygame
+import pygame
 import pymunk
+from pymunk.pygame_util import from_pygame, to_pygame
 
 from animations import (
 	MegamanStandingAnimation, MegamanRunningAnimation, MegamanJumpingAnimation, MegamanShootingAnimation
@@ -16,8 +17,8 @@ DIR_UP = -1
 
 class Character(object):
 
-	def __init__(self, name, states, anims, pos=(0,0)):
-		self.name = name
+	def __init__(self, world, states, anims, pos=(0,0)):
+		self.world = world
 
 		# Character states
 		self.states = states
@@ -27,18 +28,23 @@ class Character(object):
 		self.anims = anims
 		self.anim = None
 
+		self.initialize()
+
+		# Initial position
+		if self.rect:
+			self.rect.x = pos[0]
+			self.rect.y = pos[1]
+
+	def initialize(self):
 		self.health = 200
 		self.speed = 0.1
+		self.name = 'Unnamed'
 		self.dir = DIR_RIGHT
 
 		self.set_state('standing')
 
 		if self.anim:
 			self.rect = self.anim.framerect()
-
-			# Initial position
-			self.rect.x = pos[0]
-			self.rect.y = pos[1]
 		else:
 			self.rect = None
 
@@ -81,35 +87,31 @@ class Character(object):
 		if self.state:
 			self.state.update(time)
 
-	def draw(self, screen, cam=None):
+	def draw(self, screen):
 		if self.anim:
-			if cam:
-				self.anim.draw(screen, (
-					self.rect.left - cam.rect.left,
-					self.rect.top - cam.rect.top
-				))
-				# FOR TESTING:
-				# Draw the objects bounding box
-				# pygame.draw.rect(screen, (255,0,0), (
-				# 	self.rect.left - cam.rect.left, self.rect.top - cam.rect.top, self.rect.width, self.rect.height
-				# ), 1)
-			else:
-				self.anim.draw(screen, (
-					self.rect.left,
-					self.rect.top
-				))
+			cam = self.world.camera
+
+			self.anim.draw(screen, (
+				self.rect.left - cam.rect.left,
+				self.rect.top - cam.rect.top
+			))
+			# FOR DEBUGGING:
+			# Draw the objects bounding box
+			# pygame.draw.rect(screen, (255,0,0), (
+			# 	self.rect.left - cam.rect.left, self.rect.top - cam.rect.top, self.rect.width, self.rect.height
+			# ), 1)
 
 class SimpleCharacter(Character):
 
-	def __init__(self, name, states, anims, pos=(0,0), mass=10):
-		super(SimpleCharacter, self).__init__(name, states, anims, pos)
+	def __init__(self, world, states, anims, pos=(0,0), mass=10):
+		super(SimpleCharacter, self).__init__(world, states, anims, pos)
 
 		self.mass = mass
 
 		# Initialize Physics attributes
-		self.initialize()
+		self.physics()
 
-	def initialize(self):
+	def physics(self):
 		inertia = pymunk.moment_for_circle(
 			self.mass, 0, self.rect.width
 		)
@@ -117,33 +119,43 @@ class SimpleCharacter(Character):
 		self.body = pymunk.Body(self.mass, inertia)
 
 		if self.rect:
-			self.body.position.x = self.rect.x
-			self.body.position.y = self.rect.y
+			# Convert from pygame to pymunk coordinates
+			pos = from_pygame(
+				(self.rect.x, self.rect.y), pygame.display.get_surface()
+			)
+
+			self.body.position.x = pos[0]
+			self.body.position.y = pos[1]
 
 		self.shape = pymunk.Circle(self.body, self.rect.width)
 
 	def update(self, time):
-		super(SimpleCharacter, self).update(time)
+		# Convert from pymunk to pygame coordinates
+		pos = to_pygame(self.body.position, pygame.display.get_surface())
 
-		self.rect.x = self.body.position.x
-		self.rect.y = -self.body.position.y
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
+
+		super(SimpleCharacter, self).update(time)
 
 class Megaman(SimpleCharacter):
 
-	def __init__(self, pos=(0,0)):
-		super(Megaman, self).__init__(
-			'Megaman',
-			[
-				StandingState(self),
-				ShootingState(self),
-				RunningState(self),
-				JumpingState(self),
-			],
-			[
-				MegamanStandingAnimation(self),
-				MegamanShootingAnimation(self),
-				MegamanJumpingAnimation(self),
-				MegamanRunningAnimation(self),
-			],
-			pos
-		)
+	def __init__(self, world, pos=(0,0)):
+		states = [
+			StandingState(self),
+			ShootingState(self),
+			RunningState(self),
+			JumpingState(self),
+		]
+		anims = [
+			MegamanStandingAnimation(self),
+			MegamanShootingAnimation(self),
+			MegamanJumpingAnimation(self),
+			MegamanRunningAnimation(self),
+		]
+		super(Megaman, self).__init__(world, states, anims, pos)
+
+		self.name = 'Megaman'
+
+	def initialize(self):
+		super(Megaman, self).initialize()
