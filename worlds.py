@@ -32,16 +32,6 @@ class SimpleWorld(Word):
         # Default world gravity
         self.gravity = (0, 0.5)
 
-    def update(self, time):
-        for obj in self.objects:
-            obj.rect.x += self.gravity[0] * time
-            obj.rect.y += self.gravity[1] * time
-
-        super(SimpleWorld, self).update(time)
-
-    def draw(self, screen):
-        super(SimpleWorld, self).draw(screen)
-
 class SampleWorld(SimpleWorld):
 
     def __init__(self):

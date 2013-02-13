@@ -109,7 +109,13 @@ class Character(object):
 			), 1)
 
 class SimpleCharacter(Character):
-	pass
+
+	def update(self, time):
+		# Simulate the effects of gravity
+		self.rect.x += self.world.gravity[0] * time
+		self.rect.y += self.world.gravity[1] * time
+
+		super(SimpleCharacter, self).update(time)
 
 class Megaman(SimpleCharacter):
 
