@@ -71,17 +71,9 @@ class RunningState(State):
 		if keys[pygame.K_UP]:
 			self.character.set_state('jumping')
 		elif keys[pygame.K_LEFT]:
-			self.character.dir = characters.DIR_LEFT
-
-			# print self.character.rect.left, ' + ', self.character.dir * self.character.speed * time
-			self.character.rect.left += self.character.dir * self.character.speed * time
-			# print self.character.rect.left
+			self.character.left(time)
 		elif keys[pygame.K_RIGHT]:
-			self.character.dir = characters.DIR_RIGHT
-
-			# print self.character.rect.right, ' + ', self.character.dir * self.character.speed * time
-			self.character.rect.right += math.ceil(self.character.dir * self.character.speed * time)
-			# print self.character.rect.right
+			self.character.right(time)
 		else:
 			self.character.set_state('standing')
 
@@ -103,4 +95,20 @@ class JumpingState(State):
 
 	def message(self, msg):
 		if msg == 'anim_done':
-			self.character.set_state('standing')
+			self.character.set_state('falling')
+
+class FallingState(State):
+
+	def __init__(self, character):
+		super(FallingState, self).__init__('falling', character)
+
+	def start(self):
+		self.character.set_animation('falling')
+
+	def update(self, time):
+		keys = key.get_pressed()
+
+		if keys[pygame.K_LEFT]:
+			self.character.left(time)
+		elif keys[pygame.K_RIGHT]:
+			self.character.right(time)

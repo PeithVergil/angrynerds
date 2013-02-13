@@ -85,7 +85,14 @@ class MegamanJumpingAnimation(Animation):
 
 	def __init__(self, character):
 		super(MegamanJumpingAnimation, self).__init__(
-			'jumping', load_frames('assets/images/actor/jumping', 20), 600, character
+			'jumping', load_frames('assets/images/actor/jumping', 10), 400, character
+		)
+
+class MegamanFallingAnimation(Animation):
+
+	def __init__(self, character):
+		super(MegamanFallingAnimation, self).__init__(
+			'falling', load_frames('assets/images/actor/falling', 1), 400, character
 		)
 
 class MegamanShootingAnimation(Animation):

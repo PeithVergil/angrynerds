@@ -1,6 +1,3 @@
-from pymunk import Segment, Space, Vec2d
-from pymunk.pygame_util import draw_space
-
 from cameras import Camera
 from utils.math import lerp
 from utils.image import load_rgb
@@ -32,25 +29,18 @@ class SimpleWorld(Word):
     def __init__(self, objects, camera, bgimage=None):
         super(SimpleWorld, self).__init__(objects, camera, bgimage)
 
-        # Physics space
-        self.space = Space()
-        # Default gravity values
-        self.space.gravity = Vec2d(0.0, -900.0)
-
-        for obj in self.objects:
-            self.space.add(obj.body, obj.shape)
+        # Default world gravity
+        self.gravity = (0, 0.5)
 
     def update(self, time):
-        # Update Physics simulation
-        self.space.step(1.0/60.0)
-        # Update the rest of the world
+        for obj in self.objects:
+            obj.rect.x += self.gravity[0] * time
+            obj.rect.y += self.gravity[1] * time
+
         super(SimpleWorld, self).update(time)
 
     def draw(self, screen):
         super(SimpleWorld, self).draw(screen)
-        # FOR DEBUGGING:
-        # Draw the physics space
-        draw_space(screen, self.space)
 
 class SampleWorld(SimpleWorld):
 
@@ -62,6 +52,3 @@ class SampleWorld(SimpleWorld):
         super(SampleWorld, self).__init__(
             [megaman1, megaman2, megaman3], Camera(self, megaman2), load_rgb('assets/images/world/simple/simple.png')
         )
-
-        # Ground static object
-        self.space.add(Segment(self.space.static_body, (0, 50), (640, 50), 5))

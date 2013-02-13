@@ -1,13 +1,12 @@
+import math
 import pygame
-import pymunk
-from pymunk.pygame_util import from_pygame, to_pygame
 
 from animations import (
-	MegamanStandingAnimation, MegamanRunningAnimation, MegamanJumpingAnimation, MegamanShootingAnimation
+	MegamanStandingAnimation, MegamanRunningAnimation, MegamanJumpingAnimation, MegamanFallingAnimation, MegamanShootingAnimation
 )
 
 from states import (
-	StandingState, ShootingState, RunningState, JumpingState
+	StandingState, ShootingState, RunningState, JumpingState, FallingState
 )
 
 DIR_RIGHT = 1
@@ -71,6 +70,18 @@ class Character(object):
 	def set_animation(self, name):
 		self.anim = self.get_animation(name)
 
+	def right(self, time):
+		# Right direction
+		self.dir = DIR_RIGHT
+		# Move to right
+		self.rect.right += math.ceil(self.dir * self.speed * time)
+
+	def left(self, time):
+		# Left direction
+		self.dir = DIR_LEFT
+		# Move to left
+		self.rect.left += self.dir * self.speed * time
+
 	def message(self, msg):
 		if self.state:
 			self.state.message(msg)
@@ -91,13 +102,6 @@ class Character(object):
 		if self.anim:
 			self.anim.draw(screen, pos)
 
-			# cam = self.world.camera
-
-			# self.anim.draw(screen, (
-			# 	self.rect.left - cam.rect.left,
-			# 	self.rect.top - cam.rect.top
-			# ))
-
 			# FOR DEBUGGING:
 			# Draw the objects bounding box
 			pygame.draw.rect(screen, (255,0,0), (
@@ -105,43 +109,7 @@ class Character(object):
 			), 1)
 
 class SimpleCharacter(Character):
-
-	def __init__(self, world, states, anims, pos=(0,0), mass=10):
-		super(SimpleCharacter, self).__init__(world, states, anims, pos)
-
-		self.mass = mass
-
-		# Setup Physics attributes
-		self.init_physics()
-
-	def init_physics(self):
-		'''Setup all attributes required for Physics simulation'''
-
-		inertia = pymunk.moment_for_circle(
-			self.mass, 0, self.rect.width
-		)
-
-		self.body = pymunk.Body(self.mass, inertia)
-
-		if self.rect:
-			# Convert from pygame to pymunk coordinates
-			pos = from_pygame(
-				(self.rect.x, self.rect.y), pygame.display.get_surface()
-			)
-
-			self.body.position.x = pos[0]
-			self.body.position.y = pos[1]
-
-		self.shape = pymunk.Circle(self.body, self.rect.width)
-
-	def update(self, time):
-		# Convert from pymunk to pygame coordinates
-		pos = to_pygame(self.body.position, pygame.display.get_surface())
-
-		self.rect.x = pos[0]
-		self.rect.y = pos[1]
-
-		super(SimpleCharacter, self).update(time)
+	pass
 
 class Megaman(SimpleCharacter):
 
@@ -151,11 +119,13 @@ class Megaman(SimpleCharacter):
 			ShootingState(self),
 			RunningState(self),
 			JumpingState(self),
+			FallingState(self),
 		]
 		anims = [
 			MegamanStandingAnimation(self),
 			MegamanShootingAnimation(self),
 			MegamanJumpingAnimation(self),
+			MegamanFallingAnimation(self),
 			MegamanRunningAnimation(self),
 		]
 		super(Megaman, self).__init__(world, states, anims, pos)
