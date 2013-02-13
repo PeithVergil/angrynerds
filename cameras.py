@@ -10,15 +10,25 @@ class Camera(object):
         self.world = world
         self.target = target
 
+        if target:
+            self.rect.center = target.rect.center
+
+    def transform(self, obj):
+        return (
+            obj.rect.x - self.rect.x,
+            obj.rect.y - self.rect.y,
+        )
+
     def update(self, time):
         if self.target:
             self.rect.center = self.target.rect.center
 
+        # Don't go beyond the left or right boundaries
     	if self.rect.right > self.world.rect.right:
             self.rect.right = self.world.rect.right
         if self.rect.left < self.world.rect.left:
             self.rect.left = self.world.rect.left
-		
+		# Don't go beyond the top or bottom boundaries
         if self.rect.top < self.world.rect.top:
             self.rect.top = self.world.rect.top
         if self.rect.bottom > self.world.rect.bottom:

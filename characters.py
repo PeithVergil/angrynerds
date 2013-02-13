@@ -18,7 +18,7 @@ DIR_UP = -1
 class Character(object):
 
 	def __init__(self, world, states, anims, pos=(0,0)):
-		# The world object
+		# World object
 		self.world = world
 
 		# Character states
@@ -35,18 +35,17 @@ class Character(object):
 		self.name = 'Unnamed'
 		self.dir = DIR_RIGHT
 
-		self.initialize()
+		# Set the default state
+		self.init_state()
 
-		if self.anim:
-			self.rect = self.anim.framerect()
+		# For now, use the rect from one of the animation frames.
+		self.rect = self.anim.framerect()
 
-			# Initial position
-			self.rect.x = pos[0]
-			self.rect.y = pos[1]
-		else:
-			self.rect = None
+		# Initial position
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
 
-	def initialize(self):
+	def init_state(self):
 		self.set_state('standing')
 
 	def get_state(self, name=None):
@@ -88,19 +87,22 @@ class Character(object):
 		if self.state:
 			self.state.update(time)
 
-	def draw(self, screen):
+	def draw(self, screen, pos):
 		if self.anim:
-			cam = self.world.camera
+			self.anim.draw(screen, pos)
 
-			self.anim.draw(screen, (
-				self.rect.left - cam.rect.left,
-				self.rect.top - cam.rect.top
-			))
+			# cam = self.world.camera
+
+			# self.anim.draw(screen, (
+			# 	self.rect.left - cam.rect.left,
+			# 	self.rect.top - cam.rect.top
+			# ))
+
 			# FOR DEBUGGING:
 			# Draw the objects bounding box
-			# pygame.draw.rect(screen, (255,0,0), (
-			# 	self.rect.left - cam.rect.left, self.rect.top - cam.rect.top, self.rect.width, self.rect.height
-			# ), 1)
+			pygame.draw.rect(screen, (255,0,0), (
+				pos[0], pos[1], self.rect.width, self.rect.height
+			), 1)
 
 class SimpleCharacter(Character):
 
@@ -110,9 +112,11 @@ class SimpleCharacter(Character):
 		self.mass = mass
 
 		# Setup Physics attributes
-		self.setup()
+		self.init_physics()
 
-	def setup(self):
+	def init_physics(self):
+		'''Setup all attributes required for Physics simulation'''
+
 		inertia = pymunk.moment_for_circle(
 			self.mass, 0, self.rect.width
 		)

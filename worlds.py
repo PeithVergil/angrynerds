@@ -16,19 +16,16 @@ class Word(object):
         self.rect = bgimage.get_rect()
 
     def update(self, time):
-        self.camera.update(time)
-
         for obj in self.objects:
             obj.update(time)
 
+        self.camera.update(time)
+
     def draw(self, screen):
-        screen.blit(self.image, (
-            self.rect.left - self.camera.rect.left,
-            self.rect.top - self.camera.rect.top
-        ))
+        screen.blit(self.image, self.camera.transform(self))
 
         for obj in self.objects:
-            obj.draw(screen)
+            obj.draw(screen, self.camera.transform(obj))
 
 class SimpleWorld(Word):
 
