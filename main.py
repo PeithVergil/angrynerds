@@ -42,7 +42,7 @@ def main():
 		count += time
 		frames += 1
 		if count >= 1000:
-			print '%d (%d) FPS' % (clock.get_fps(), frames)
+			print '%d FPS' % clock.get_fps()
 			count = 0
 			frames = 0
 			

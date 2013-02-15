@@ -9,14 +9,23 @@ class Camera(object):
         )
         self.world = world
         self.target = target
-
-        if target:
-            self.rect.center = target.rect.center
-
+        
     def transform(self, obj):
         return (
             obj.rect.x - self.rect.x,
             obj.rect.y - self.rect.y,
+        )
+
+    def to_screen(self, x, y):
+        return (
+            x - self.rect.x,
+            y - self.rect.y,
+        )
+
+    def to_world(self, x, y):
+        return (
+            x + self.rect.x,
+            y + self.rect.y,
         )
 
     def update(self, time):

@@ -1,12 +1,13 @@
 import pygame
 
-from grid import Grid
+from grid import Grid, SampleGridMap
 from cameras import Camera
 from utils.image import load_rgb
 
 from characters import Megaman
 
-class Word(object):
+class World(object):
+    '''The base class of all world objects'''
 
     def __init__(self, objects, camera, bgimage=None):
         self.objects = objects
@@ -21,46 +22,55 @@ class Word(object):
         self.camera.update(time)
 
     def draw(self, screen):
-        screen.blit(self.image, self.camera.transform(self))
-
         for obj in self.objects:
             obj.draw(screen, self.camera.transform(obj))
 
-class SimpleWorld(Word):
+class SimpleWorld(World):
+    '''A world with simple Physics simulation'''
 
     def __init__(self, objects, camera, bgimage=None):
         super(SimpleWorld, self).__init__(objects, camera, bgimage)
 
         # Default world gravity
-        self.gravity = (0, 0.5)
+        self.gravity = (0, 0)
+        # self.gravity = (0, 0.5)
 
 class SampleWorld(SimpleWorld):
 
     def __init__(self):
-        megaman1 = Megaman(self, (100,100))
-        megaman2 = Megaman(self, (200,200))
-        megaman3 = Megaman(self, (300,300))
+        # The character
+        megaman = Megaman(self, (200,200))
+
+         # The camera
+        camera = Camera(self, megaman)
 
         super(SampleWorld, self).__init__(
-            [megaman1, megaman2, megaman3], Camera(self, megaman2), load_rgb('assets/images/world/simple/simple.png')
+            [megaman], camera, load_rgb('assets/images/world/simple/simple.png')
         )
 
-        self.grid = Grid(20, 20, 50)
+        self.gmap = SampleGridMap(self)
 
     def update(self, time):
         super(SampleWorld, self).update(time)
 
         mpos = pygame.mouse.get_pos()
-        grid = self.grid.screen(
-            mpos[0],
-            mpos[1]
+        # Convert mouse position from
+        # screen space to world space
+        grid = self.gmap.screen(
+            mpos[0] + self.camera.rect.x,
+            mpos[1] + self.camera.rect.y,
         )
 
-        self.cpos = self.grid.get(grid[1], grid[0])
+        self.cpos = self.gmap.grid(grid[1], grid[0])
 
     def draw(self, screen):
-        super(SampleWorld, self).draw(screen)
+        self.gmap.draw(screen)
 
-        pygame.draw.rect(screen, (0,255,0), self.cpos)
-        for cell in self.grid.cells():
-            pygame.draw.rect(screen, (255,0,0), cell, 1)
+        pygame.draw.rect(screen, (0,255,0), (
+            self.cpos[0] - self.camera.rect.x,
+            self.cpos[1] - self.camera.rect.y,
+            self.cpos[2],
+            self.cpos[3],
+        ))
+
+        super(SampleWorld, self).draw(screen)
