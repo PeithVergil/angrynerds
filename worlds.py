@@ -47,8 +47,20 @@ class SampleWorld(SimpleWorld):
 
         self.grid = Grid(20, 20, 50)
 
+    def update(self, time):
+        super(SampleWorld, self).update(time)
+
+        mpos = pygame.mouse.get_pos()
+        grid = self.grid.screen(
+            mpos[0],
+            mpos[1]
+        )
+
+        self.cpos = self.grid.get(grid[1], grid[0])
+
     def draw(self, screen):
         super(SampleWorld, self).draw(screen)
 
-        for block in self.grid.blocks():
-            pygame.draw.rect(screen, (255,0,0), block, 1)
+        pygame.draw.rect(screen, (0,255,0), self.cpos)
+        for cell in self.grid.cells():
+            pygame.draw.rect(screen, (255,0,0), cell, 1)
