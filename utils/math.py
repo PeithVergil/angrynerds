@@ -3,6 +3,12 @@ import math
 def lerp(a, b, factor):
 	return a + (b - a) * factor
 
+def deg_to_rad(deg):
+	return math.radians(deg)
+
+def rad_to_deg(rad):
+	return math.degrees(rad)
+
 class Vector2(object):
 	"""Represents a 2D vector."""
 
@@ -29,9 +35,11 @@ class Vector2(object):
 		return math.sqrt(self.x**2 + self.y**2)
 
 	def normalize(self):
-		m = self.magnitude()
-		self.x /= m
-		self.y /= m
+		mag = self.magnitude()
+
+		if mag != 0:
+			self.x /= mag
+			self.y /= mag
 
 	def __str__(self):
 		return '(%f, %f)' % (self.x, self.y)
