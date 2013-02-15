@@ -1,5 +1,7 @@
+import pygame
+
+from grid import Grid
 from cameras import Camera
-from utils.math import lerp
 from utils.image import load_rgb
 
 from characters import Megaman
@@ -42,3 +44,11 @@ class SampleWorld(SimpleWorld):
         super(SampleWorld, self).__init__(
             [megaman1, megaman2, megaman3], Camera(self, megaman2), load_rgb('assets/images/world/simple/simple.png')
         )
+
+        self.grid = Grid(20, 20, 50)
+
+    def draw(self, screen):
+        super(SampleWorld, self).draw(screen)
+
+        for block in self.grid.blocks():
+            pygame.draw.rect(screen, (255,0,0), block, 1)
