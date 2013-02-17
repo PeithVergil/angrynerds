@@ -9,7 +9,7 @@ packages = []
 dll_excludes = []
 
 setup(
-	name = 'AngryNerds',
+	name = 'Angry Nerds',
 	author = 'Peith Vergil',
 	version = '0.0.1',
 	options = {
