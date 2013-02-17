@@ -17,7 +17,10 @@ def main():
 	screen = pygame.display.set_mode(
 		SCREENSIZE, 0, 32
 	)
-	pygame.display.set_caption('Hello, World!')
+	pygame.display.set_icon(
+		pygame.image.load('icon.ico').convert()
+	)
+	pygame.display.set_caption('Hello, Nerds!')
 
 	running = True
 	frames = 0
