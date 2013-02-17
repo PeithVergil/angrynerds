@@ -1,27 +1,34 @@
-import pygame
+from pygame import Rect
 
-from grid import Grid, SampleGridMap
+from grid import SimpleTileMap
 from cameras import Camera
-from utils.image import load_rgb
 
 from characters import Megaman
 
 class World(object):
     '''The base class of all world objects'''
 
-    def __init__(self, objects, camera, bgimage=None):
+    def __init__(self, tilemap, objects, camera):
+        self.tilemap = tilemap
+        if tilemap:
+            self.rect = tilemap.bounds
+        else:
+            self.rect = None
+
         self.objects = objects
         self.camera = camera
-        self.image = bgimage
-        self.rect = bgimage.get_rect()
 
     def update(self, time):
+        self.tilemap.update(time)
+
         for obj in self.objects:
             obj.update(time)
 
         self.camera.update(time)
 
     def draw(self, screen):
+        self.tilemap.draw(screen)
+
         for obj in self.objects:
             obj.draw(screen, self.camera.transform(obj))
 
@@ -45,32 +52,5 @@ class SampleWorld(SimpleWorld):
         camera = Camera(self, megaman)
 
         super(SampleWorld, self).__init__(
-            [megaman], camera, load_rgb('assets/images/world/simple/simple.png')
+            SimpleTileMap(self), [megaman], camera
         )
-
-        self.gmap = SampleGridMap(self)
-
-    def update(self, time):
-        super(SampleWorld, self).update(time)
-
-        mpos = pygame.mouse.get_pos()
-        # Convert mouse position from
-        # screen space to world space
-        grid = self.gmap.screen(
-            mpos[0] + self.camera.rect.x,
-            mpos[1] + self.camera.rect.y,
-        )
-
-        self.cpos = self.gmap.grid(grid[1], grid[0])
-
-    def draw(self, screen):
-        self.gmap.draw(screen)
-
-        pygame.draw.rect(screen, (0,255,0), (
-            self.cpos[0] - self.camera.rect.x,
-            self.cpos[1] - self.camera.rect.y,
-            self.cpos[2],
-            self.cpos[3],
-        ))
-
-        super(SampleWorld, self).draw(screen)
