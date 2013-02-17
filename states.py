@@ -23,7 +23,13 @@ class State(object):
 	def stop(self):
 		pass
 
-class StandingState(State):
+class ActionState(State):
+
+	def message(self, msg):
+		if msg == 'char_falling':
+			self.character.set_state('falling')
+
+class StandingState(ActionState):
 
 	def __init__(self, character):
 		super(StandingState, self).__init__('standing', character)
@@ -45,7 +51,7 @@ class StandingState(State):
 		elif keys[pygame.K_SPACE]:
 			self.character.set_state('shooting')
 
-class ShootingState(State):
+class ShootingState(ActionState):
 
 	def __init__(self, character):
 		super(ShootingState, self).__init__('shooting', character)
@@ -57,7 +63,7 @@ class ShootingState(State):
 		if msg == 'anim_done':
 			self.character.set_state('standing')
 
-class RunningState(State):
+class RunningState(ActionState):
 
 	def __init__(self, character):
 		super(RunningState, self).__init__('running', character)
@@ -77,27 +83,34 @@ class RunningState(State):
 		else:
 			self.character.set_state('standing')
 
-class JumpingState(State):
+class JumpingState(ActionState):
 
 	def __init__(self, character):
 		super(JumpingState, self).__init__('jumping', character)
 
 	def start(self):
 		self.character.set_animation('jumping')
+		self.time = 0
 
 	def update(self, time):
+		self.character.jump(time)
+
 		keys = key.get_pressed()
 
 		if keys[pygame.K_LEFT]:
-			self.character.dir = characters.DIR_LEFT
+			self.character.left(time)
 		elif keys[pygame.K_RIGHT]:
-			self.character.dir = characters.DIR_RIGHT
+			self.character.right(time)
+
+		self.time += time
+		if self.time >= 1000:
+			self.character.set_state('falling')
 
 	def message(self, msg):
 		if msg == 'anim_done':
 			self.character.set_state('falling')
 
-class FallingState(State):
+class FallingState(ActionState):
 
 	def __init__(self, character):
 		super(FallingState, self).__init__('falling', character)
@@ -112,3 +125,7 @@ class FallingState(State):
 			self.character.left(time)
 		elif keys[pygame.K_RIGHT]:
 			self.character.right(time)
+
+	def message(self, msg):
+		if msg == 'char_grounded':
+			self.character.set_state('standing')

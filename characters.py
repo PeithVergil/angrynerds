@@ -37,8 +37,8 @@ class Character(object):
 		# Set the default state
 		self.init_state()
 
-		# For now, use the rect from one of the animation frames.
-		self.rect = self.anim.framerect()
+		# Define the object's rect
+		self.init_rect()
 
 		# Initial position
 		self.rect.x = pos[0]
@@ -46,6 +46,10 @@ class Character(object):
 
 	def init_state(self):
 		self.set_state('standing')
+
+	def init_rect(self):
+		# For now, use the rect from one of the animation frames.
+		self.rect = self.anim.framerect()
 
 	def get_state(self, name=None):
 		for state in self.states:
@@ -82,6 +86,9 @@ class Character(object):
 		# Move to left
 		self.rect.left += self.dir * self.speed * time
 
+	def jump(self, time):
+		self.rect.top -= 0.9 * time
+
 	def message(self, msg):
 		if self.state:
 			self.state.message(msg)
@@ -103,21 +110,36 @@ class Character(object):
 			self.anim.draw(screen, pos)
 
 			# FOR DEBUGGING:
-			camera = self.world.camera
-
 			# Draw the character's bounding box
 			# pygame.draw.rect(screen, (255,0,0), (
 			# 	pos[0], pos[1], self.rect.width, self.rect.height
 			# ), 1)
 
-			# Draw the character's bottom center point
-			x, y = self.rect.midbottom
-			x, y = camera.to_screen(x, y)
-			pygame.draw.rect(screen, (0,0,255), (
-				x-2, y-2, 4, 4
-			))
-
 class SimpleCharacter(Character):
+
+	def sensor_top(self):
+		tilemap = self.world.tilemap
+
+		x, y = self.rect.center
+		r, c = tilemap.screen(x, y)
+		tile = tilemap.lookup(r, c)
+
+		if tile.solid:
+			return (True, (x, y), (r, c))
+		else:
+			return False
+
+	def sensor_bot(self):
+		tilemap = self.world.tilemap
+
+		x, y = self.rect.midbottom
+		r, c = tilemap.screen(x, y)
+		tile = tilemap.lookup(r, c)
+
+		if tile.solid:
+			return (True, (x, y), (r, c))
+		else:
+			return False
 
 	def update(self, time):
 		tilemap = self.world.tilemap
@@ -126,15 +148,40 @@ class SimpleCharacter(Character):
 		self.rect.x += self.world.gravity[0] * time
 		self.rect.y += self.world.gravity[1] * time
 
-		x, y = self.rect.midbottom
-		r, c = tilemap.screen(x, y)
-		tile = tilemap.lookup(r, c)
-		if tile.solid:
-			x, y, w, h = tilemap.grid(r, c)
+		bot = self.sensor_bot()
+		if bot:
+			b_active, b_xy, b_rc = bot
 
-			self.rect.bottom = y
+			top = self.sensor_top()
+			if not top:
+				x, y, w, h = tilemap.grid(b_rc[0], b_rc[1])
+
+				self.rect.bottom = y
+
+				self.message('char_grounded')
+		else:
+			self.message('falling')
 
 		super(SimpleCharacter, self).update(time)
+
+	def draw(self, screen, pos):
+		super(SimpleCharacter, self).draw(screen, pos)
+
+		# FOR DEBUGGING:
+		camera = self.world.camera
+
+		# Draw the character's bottom center point
+		x, y = self.rect.midbottom
+		x, y = camera.to_screen(x, y)
+		pygame.draw.rect(screen, (0,0,255), (
+			x-2, y-2, 4, 4
+		))
+
+		x, y = self.rect.center
+		x, y = camera.to_screen(x, y)
+		pygame.draw.rect(screen, (0,0,255), (
+			x-2, y-2, 4, 4
+		))
 
 class Megaman(SimpleCharacter):
 

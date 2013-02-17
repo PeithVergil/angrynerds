@@ -115,6 +115,11 @@ class TileMap(Grid):
 		else:
 			return tile
 
+	def get_tile(self, x, y):
+		r, c = self.screen(x, y)
+		tile = self.lookup(r, c)
+
+		return tile
 
 	def update(self, time):
 		camera = self.world.camera
