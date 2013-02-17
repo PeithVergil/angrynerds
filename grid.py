@@ -147,7 +147,7 @@ class TileMap(Grid):
 			x, y = camera.to_screen(x, y)
 
 			# Draw the grid
-			pygame.draw.rect(screen, (255,0,0), (x, y, w, h), 1)
+			# pygame.draw.rect(screen, (255,0,0), (x, y, w, h), 1)
 
 		# Draw the mouse cursor
 		pygame.draw.rect(screen, (0,255,0), (
@@ -165,9 +165,9 @@ class SimpleTileMap(TileMap):
 		super(SimpleTileMap, self).__init__(world,
 			[
 				Tile(images[0], images[0].get_rect(), 'sky',),
-				Tile(images[1], images[1].get_rect(), 'grass'),
-				Tile(images[2], images[2].get_rect(), 'dirt'),
-				Tile(images[3], images[3].get_rect(), 'brick'),
+				Tile(images[1], images[1].get_rect(), 'grass', True),
+				Tile(images[2], images[2].get_rect(), 'dirt', True),
+				Tile(images[3], images[3].get_rect(), 'brick', True),
 			],
 			(
 	            (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
@@ -176,7 +176,7 @@ class SimpleTileMap(TileMap):
 	            (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,0,0,0),
 	            (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 	            (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3),
-	            (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+	            (0,0,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 	            (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,0),
 	            (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 	            (3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),

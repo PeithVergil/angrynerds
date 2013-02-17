@@ -103,17 +103,36 @@ class Character(object):
 			self.anim.draw(screen, pos)
 
 			# FOR DEBUGGING:
-			# Draw the objects bounding box
-			pygame.draw.rect(screen, (255,0,0), (
-				pos[0], pos[1], self.rect.width, self.rect.height
-			), 1)
+			camera = self.world.camera
+
+			# Draw the character's bounding box
+			# pygame.draw.rect(screen, (255,0,0), (
+			# 	pos[0], pos[1], self.rect.width, self.rect.height
+			# ), 1)
+
+			# Draw the character's bottom center point
+			x, y = self.rect.midbottom
+			x, y = camera.to_screen(x, y)
+			pygame.draw.rect(screen, (0,0,255), (
+				x-2, y-2, 4, 4
+			))
 
 class SimpleCharacter(Character):
 
 	def update(self, time):
+		tilemap = self.world.tilemap
+
 		# Simulate the effects of gravity
 		self.rect.x += self.world.gravity[0] * time
 		self.rect.y += self.world.gravity[1] * time
+
+		x, y = self.rect.midbottom
+		r, c = tilemap.screen(x, y)
+		tile = tilemap.lookup(r, c)
+		if tile.solid:
+			x, y, w, h = tilemap.grid(r, c)
+
+			self.rect.bottom = y
 
 		super(SimpleCharacter, self).update(time)
 

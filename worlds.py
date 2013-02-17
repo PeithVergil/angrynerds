@@ -39,8 +39,7 @@ class SimpleWorld(World):
         super(SimpleWorld, self).__init__(objects, camera, bgimage)
 
         # Default world gravity
-        self.gravity = (0, 0)
-        # self.gravity = (0, 0.5)
+        self.gravity = (0, 0.5)
 
 class SampleWorld(SimpleWorld):
 
