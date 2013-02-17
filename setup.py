@@ -23,8 +23,8 @@ setup(
 			'dll_excludes' : dll_excludes,
 		}
 	},
-	windows = [
-		'main.py'
-	],
+	windows = [{
+		'script': 'main.py', 'icon_resources': [(0, 'icon.ico')]
+	}],
 	zipfile = None
 )
