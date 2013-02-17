@@ -18,7 +18,7 @@ def main():
 		SCREENSIZE, 0, 32
 	)
 	pygame.display.set_icon(
-		pygame.image.load('icon.ico').convert()
+		pygame.image.load('icon.png')
 	)
 	pygame.display.set_caption('Hello, Nerds!')
 
