@@ -24,7 +24,7 @@ setup(
 		}
 	},
 	windows = [{
-		'script': 'main.py', 'icon_resources': [(0, 'icon.ico')]
+		'script': 'main.py', 'icon_resources': [(1, 'icon.ico')]
 	}],
 	zipfile = None
 )
