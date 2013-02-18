@@ -152,7 +152,7 @@ class TileMap(Grid):
 			x, y = camera.to_screen(x, y)
 
 			# Draw the grid
-			# pygame.draw.rect(screen, (255,0,0), (x, y, w, h), 1)
+			pygame.draw.rect(screen, (255,0,0), (x, y, w, h), 1)
 
 		# Draw the mouse cursor
 		pygame.draw.rect(screen, (0,255,0), (

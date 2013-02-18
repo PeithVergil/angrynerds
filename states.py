@@ -42,13 +42,14 @@ class StandingState(ActionState):
 
 		if keys[pygame.K_UP]:
 			self.character.set_state('jumping')
-		elif keys[pygame.K_LEFT]:
-			self.character.dir = characters.DIR_LEFT
+
+		if keys[pygame.K_LEFT]:
 			self.character.set_state('running')
-		elif keys[pygame.K_RIGHT]:
-			self.character.dir = characters.DIR_RIGHT
+
+		if keys[pygame.K_RIGHT]:
 			self.character.set_state('running')
-		elif keys[pygame.K_SPACE]:
+
+		if keys[pygame.K_SPACE]:
 			self.character.set_state('shooting')
 
 class ShootingState(ActionState):
@@ -90,7 +91,6 @@ class JumpingState(ActionState):
 
 	def start(self):
 		self.character.set_animation('jumping')
-		self.time = 0
 
 	def update(self, time):
 		self.character.jump(time)
@@ -99,12 +99,9 @@ class JumpingState(ActionState):
 
 		if keys[pygame.K_LEFT]:
 			self.character.left(time)
-		elif keys[pygame.K_RIGHT]:
-			self.character.right(time)
 
-		self.time += time
-		if self.time >= 1000:
-			self.character.set_state('falling')
+		if keys[pygame.K_RIGHT]:
+			self.character.right(time)
 
 	def message(self, msg):
 		if msg == 'anim_done':
@@ -119,6 +116,8 @@ class FallingState(ActionState):
 		self.character.set_animation('falling')
 
 	def update(self, time):
+		self.character.fall(time)
+
 		keys = key.get_pressed()
 
 		if keys[pygame.K_LEFT]:

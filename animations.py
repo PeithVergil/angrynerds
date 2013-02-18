@@ -16,14 +16,17 @@ class Animation(object):
 		self.flipx = False
 		self.flipy = False
 
+	@property
 	def numframes(self):
 		'''Get the total number of frames'''
 		return len(self.frames)
 
+	@property
 	def currframe(self):
 		'''Get the current frame'''
 		return self.frames[self.index]
 
+	@property
 	def framerect(self):
 		'''Get the rect object of the current frame'''
 		return self.frames[self.index].get_rect()
@@ -31,7 +34,7 @@ class Animation(object):
 	def next(self):
 		'''Jump to next frame'''
 		self.index += 1
-		if self.index == self.numframes():
+		if self.index == self.numframes:
 			if self.character:
 				self.character.message('anim_done')
 
@@ -44,7 +47,7 @@ class Animation(object):
 			if self.character:
 				self.character.message('anim_done')
 
-			self.index = self.numframes() - 1
+			self.index = self.numframes - 1
 
 	def update(self, time):
 		self.time += time
@@ -59,7 +62,7 @@ class Animation(object):
 
 	def draw(self, screen, pos=(0,0)):
 		frame = transform.flip(
-			self.currframe(),
+			self.currframe,
 			self.flipx,
 			self.flipy
 		)

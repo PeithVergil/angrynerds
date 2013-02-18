@@ -1,5 +1,6 @@
 import math
 import pygame
+from pygame import Rect
 
 from animations import (
 	MegamanStandingAnimation, MegamanRunningAnimation, MegamanJumpingAnimation, MegamanFallingAnimation, MegamanShootingAnimation
@@ -48,8 +49,8 @@ class Character(object):
 		self.set_state('standing')
 
 	def init_rect(self):
-		# For now, use the rect from one of the animation frames.
-		self.rect = self.anim.framerect()
+		# By default, use the rect from one of the animation frames.
+		self.rect = self.anim.framerect
 
 	def get_state(self, name=None):
 		for state in self.states:
@@ -87,7 +88,14 @@ class Character(object):
 		self.rect.left += self.dir * self.speed * time
 
 	def jump(self, time):
-		self.rect.top -= 0.9 * time
+		self.rect.top -= 0.4 * time
+
+	def fall(self, time):
+		'''Simulate the effects of gravity'''
+		vx, vy = self.world.gravity
+
+		self.rect.x += vx * time
+		self.rect.y += vy * time
 
 	def message(self, msg):
 		if self.state:
@@ -105,31 +113,19 @@ class Character(object):
 		if self.state:
 			self.state.update(time)
 
-	def draw(self, screen, pos):
+	def draw(self, screen, position):
 		if self.anim:
-			self.anim.draw(screen, pos)
+			self.anim.draw(screen, position)
 
 			# FOR DEBUGGING:
 			# Draw the character's bounding box
-			# pygame.draw.rect(screen, (255,0,0), (
-			# 	pos[0], pos[1], self.rect.width, self.rect.height
-			# ), 1)
+			pygame.draw.rect(screen, (255,0,0), (
+				position[0], position[1], self.rect.width, self.rect.height
+			), 1)
 
 class SimpleCharacter(Character):
 
-	def sensor_top(self):
-		tilemap = self.world.tilemap
-
-		x, y = self.rect.center
-		r, c = tilemap.screen(x, y)
-		tile = tilemap.lookup(r, c)
-
-		if tile.solid:
-			return (True, (x, y), (r, c))
-		else:
-			return False
-
-	def sensor_bot(self):
+	def update(self, time):
 		tilemap = self.world.tilemap
 
 		x, y = self.rect.midbottom
@@ -137,30 +133,13 @@ class SimpleCharacter(Character):
 		tile = tilemap.lookup(r, c)
 
 		if tile.solid:
-			return (True, (x, y), (r, c))
+			x, y, w, h = tilemap.grid(r, c)
+
+			self.rect.bottom = y
+
+			self.message('char_grounded')
 		else:
-			return False
-
-	def update(self, time):
-		tilemap = self.world.tilemap
-
-		# Simulate the effects of gravity
-		self.rect.x += self.world.gravity[0] * time
-		self.rect.y += self.world.gravity[1] * time
-
-		bot = self.sensor_bot()
-		if bot:
-			b_active, b_xy, b_rc = bot
-
-			top = self.sensor_top()
-			if not top:
-				x, y, w, h = tilemap.grid(b_rc[0], b_rc[1])
-
-				self.rect.bottom = y
-
-				self.message('char_grounded')
-		else:
-			self.message('falling')
+			self.message('char_falling')
 
 		super(SimpleCharacter, self).update(time)
 
@@ -203,3 +182,15 @@ class Megaman(SimpleCharacter):
 		super(Megaman, self).__init__(world, states, anims, pos)
 
 		self.name = 'Megaman'
+
+	def init_rect(self):
+		frame = self.anim.framerect
+
+		t = frame.top + 1
+		l = frame.left + 1
+		r = frame.right - 1
+		b = frame.bottom - 1
+
+		self.rect = Rect(
+			l, t, r, b
+		)
